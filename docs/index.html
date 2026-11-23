@@ -11,7 +11,7 @@
   <div class="app-bar">
     <div class="app-bar-inner">
       <div class="brand-row">
-        <span class="chip">MOUCHE V3</span>
+        <span class="chip">MOUCHE V4</span>
         <strong>Foil Tip Bluetooth &amp; Contact Telemetry</strong>
       </div>
       <div id="mass-budget-status" class="chip">FIE Mass OK: 486.0 g (14.0 g margin)</div>
@@ -21,21 +21,32 @@
   <main class="container">
     <section class="mega-hero">
       <div class="hero-banner">
-        <span class="chip">Unified Hero Lab &bull; Sliders + Explainer + Downloads</span>
+        <span class="chip">Unified Hero Lab &bull; Engineer Drawings + Sliders + Explainer</span>
         <h1>Mouche — Foil Tip Bluetooth &amp; Test Platform</h1>
-        <p>Built via <code>src/build_site.py</code> at <code>2026-11-23T16:18:20.613584+00:00</code> &bull; NumPy <code>2.3.5</code> &bull; Ceiling &lt;500 g foil mass &amp; &gt;500 g tip spring break force.</p>
+        <p>Built via <code>src/build_site.py</code> at <code>2026-11-23T16:35:23.343417+00:00</code> &bull; NumPy <code>2.3.5</code> &bull; Ceiling &lt;500 g foil mass &amp; &gt;500 g tip spring break force.</p>
       </div>
 
       <div class="hero-body">
         <div class="explainer-grid">
           <div class="explainer-box">
-            <h2>Etymology &amp; Tip Mechanics</h2>
-            <p><strong>Mouche</strong> (French for <em>fly</em>) names a pinpoint training mark. Foil tips pair a plunger, insulator, barrel, screw, sleeve, pressure spring (&gt;500 g break force), and wire inside a &lt;500 g foil—favoring a thin wireless module and rigid-flex carrier over fragile WLCSP earbud harvesting.</p>
+            <h2>Etymology &amp; Engineer's Tip Constraints</h2>
+            <p><strong>Mouche</strong> (French for <em>fly</em>) names a pinpoint training target. Foil tips compress inside tight millimeter barrel tolerances (&gt;500 g tip break force) under a &lt;500 g weapon mass limit—favoring a thin wireless module and rigid-flex carrier over fragile WLCSP earbud harvesting.</p>
           </div>
           <div class="explainer-box">
             <h2>Accelerometer + Mic Spatial &amp; Contact Log</h2>
             <p><strong>Contact:</strong> Accel magnitude, jerk, squared window energy, and refractory gating paired with MEMS microphone transients and tip-switch state classify flicks, flat hits, and beats. <strong>Spatial:</strong> Gyro/accel pose and short impact-anchored arcs log relative motion while respecting integration drift limits.</p>
           </div>
+        </div>
+
+        <div class="figure-grid">
+          <figure class="figure-card">
+            <img src="https://www.researchgate.net/publication/317260527/figure/fig4/AS:500815383232512@1496415100365/Schematic-cross-sectional-view-of-the-foil_Q320.jpg" alt="Schematic cross-sectional view of the foil tip showing millimeter dimensions" />
+            <figcaption><strong>Engineer's Drawing:</strong> Foil tip cross-section (<code>D = 4 mm</code>, corner/slot radii). Credit: ResearchGate (<code>https://www.researchgate.net/figure/Schematic-cross-sectional-view-of-the-foil_fig4_317260527</code>).</figcaption>
+          </figure>
+          <figure class="figure-card">
+            <img src="https://store-usa.arduino.cc/cdn/shop/files/c000136_a_700x525.jpg?v=1727103797" alt="6-axis accelerometer and gyroscope IMU module showing X, Y, Z axes" />
+            <figcaption><strong>6-Axis IMU Reference:</strong> Accelerometer + gyroscope board with X/Y/Z axes. Credit: Arduino Store (<code>https://store-usa.arduino.cc/products/grove-6-axis-accelerometer-gyroscope</code>).</figcaption>
+          </figure>
         </div>
 
         <div class="slider-panel">
@@ -86,10 +97,10 @@
         </div>
 
         <div class="media-credits">
-          <strong>Referenced Engineering Drawings, Hardware &amp; Motion Clips:</strong>
+          <strong>Credits &amp; Motion References:</strong>
           <ul>
-            <li>Foil point cross-section drawing: South African Fencing foil tip diagram (<code>https://saf.pairsite.com/foiltip.html</code>).</li>
-            <li>6-DoF IMU X/Y/Z axis &amp; sensor reference: Adafruit 6-DoF IMU breakout module (<code>https://www.adafruit.com/product/3886</code>).</li>
+            <li>Foil tip cross-section drawing: ResearchGate schematic (<code>https://www.researchgate.net/figure/Schematic-cross-sectional-view-of-the-foil_fig4_317260527</code>).</li>
+            <li>6-axis IMU sensor board: Arduino Store Grove 6-Axis Accelerometer &amp; Gyroscope (<code>https://store-usa.arduino.cc/products/grove-6-axis-accelerometer-gyroscope</code>).</li>
             <li>Fencing foil point &amp; flick motion demos: YouTube search query <code>"fencing foil tip point flick hit action"</code>.</li>
           </ul>
         </div>
@@ -122,7 +133,7 @@
   &quot;brand&quot;: &quot;Mouche&quot;,
   &quot;title&quot;: &quot;Mouche \u2014 Foil Tip Bluetooth &amp; Test Platform&quot;,
   &quot;etymology&quot;: &quot;French &#x27;mouche&#x27; (fly / small precision target on a training surface or plastron)&quot;,
-  &quot;built_at_utc&quot;: &quot;2026-11-23T16:18:20.613584+00:00&quot;,
+  &quot;built_at_utc&quot;: &quot;2026-11-23T16:35:23.343417+00:00&quot;,
   &quot;numpy_version&quot;: &quot;2.3.5&quot;,
   &quot;constraints&quot;: {
     &quot;max_foil_mass_g&quot;: 500.0,

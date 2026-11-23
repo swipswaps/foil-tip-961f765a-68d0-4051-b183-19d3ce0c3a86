@@ -1,4 +1,4 @@
-"""Build Mouche V3 unified Hero + Slider test platform (`docs/`) and `docs/downloads/`."""
+"""Build Mouche V4 hero + credited engineering figures + test platform (`docs/`)."""
 
 from datetime import datetime, timezone
 import html
@@ -124,7 +124,7 @@ def run_test_suite() -> dict:
 
     (docs_dir / "build_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
-    css_content = """/* Mouche V3 Unified Hero + Slider Telemetry Styles */
+    css_content = """/* Mouche V4 Unified Hero + Credited Media + Slider Styles */
 :root {
   --md-bg: #f3f6fa;
   --md-surface: #ffffff;
@@ -205,7 +205,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.1rem;
 }
 .explainer-box {
   background: var(--md-surface-2);
@@ -215,6 +215,32 @@ body {
 }
 .explainer-box h2 { margin: 0 0 0.4rem; font-size: 1.05rem; color: var(--md-primary); }
 .explainer-box p { margin: 0; font-size: 0.92rem; }
+.figure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+}
+.figure-card {
+  background: #ffffff;
+  border: 1px solid var(--md-outline);
+  border-radius: var(--md-radius-sm);
+  padding: 0.85rem;
+  margin: 0;
+}
+.figure-card img {
+  width: 100%;
+  max-height: 210px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f8fafc;
+  display: block;
+}
+.figure-card figcaption {
+  margin-top: 0.55rem;
+  font-size: 0.82rem;
+  color: var(--md-ink-muted);
+}
 .slider-panel {
   background: #f8fafc;
   border: 1px solid var(--md-outline);
@@ -321,7 +347,7 @@ pre { padding: 0.9rem; overflow-x: auto; max-height: 260px; border: 1px solid va
 """
     (docs_dir / "mouche.css").write_text(css_content, encoding="utf-8")
 
-    js_content = """// Mouche V3 unified Hero slider, waveform scrub, CSV/JSON parser & detector
+    js_content = """// Mouche V4 unified Hero slider, waveform scrub, CSV/JSON parser & detector
 let moucheState = {
   manifest: null,
   trace: [],
@@ -590,7 +616,7 @@ function refreshHeroPlatform() {
   renderEventsTable(events);
 }
 
-async function initMoucheV3() {
+async function initMoucheV4() {
   const manifestPre = document.getElementById("live-manifest-view");
   try {
     const resp = await fetch("build_manifest.json", { cache: "no-store" });
@@ -626,7 +652,7 @@ async function initMoucheV3() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "mouche-v3-session.json";
+    a.download = "mouche-v4-session.json";
     a.click();
     URL.revokeObjectURL(url);
   });
@@ -658,7 +684,7 @@ async function initMoucheV3() {
   refreshHeroPlatform();
 }
 
-document.addEventListener("DOMContentLoaded", initMoucheV3);
+document.addEventListener("DOMContentLoaded", initMoucheV4);
 """
     (docs_dir / "mouche.js").write_text(js_content, encoding="utf-8")
 
@@ -679,7 +705,7 @@ document.addEventListener("DOMContentLoaded", initMoucheV3);
   <div class="app-bar">
     <div class="app-bar-inner">
       <div class="brand-row">
-        <span class="chip">MOUCHE V3</span>
+        <span class="chip">MOUCHE V4</span>
         <strong>Foil Tip Bluetooth &amp; Contact Telemetry</strong>
       </div>
       <div id="mass-budget-status" class="chip">FIE Mass OK: 486.0 g (14.0 g margin)</div>
@@ -689,7 +715,7 @@ document.addEventListener("DOMContentLoaded", initMoucheV3);
   <main class="container">
     <section class="mega-hero">
       <div class="hero-banner">
-        <span class="chip">Unified Hero Lab &bull; Sliders + Explainer + Downloads</span>
+        <span class="chip">Unified Hero Lab &bull; Engineer Drawings + Sliders + Explainer</span>
         <h1>Mouche — Foil Tip Bluetooth &amp; Test Platform</h1>
         <p>Built via <code>src/build_site.py</code> at <code>{safe_built}</code> &bull; NumPy <code>{safe_np}</code> &bull; Ceiling &lt;500 g foil mass &amp; &gt;500 g tip spring break force.</p>
       </div>
@@ -697,13 +723,24 @@ document.addEventListener("DOMContentLoaded", initMoucheV3);
       <div class="hero-body">
         <div class="explainer-grid">
           <div class="explainer-box">
-            <h2>Etymology &amp; Tip Mechanics</h2>
-            <p><strong>Mouche</strong> (French for <em>fly</em>) names a pinpoint training mark. Foil tips pair a plunger, insulator, barrel, screw, sleeve, pressure spring (&gt;500 g break force), and wire inside a &lt;500 g foil—favoring a thin wireless module and rigid-flex carrier over fragile WLCSP earbud harvesting.</p>
+            <h2>Etymology &amp; Engineer's Tip Constraints</h2>
+            <p><strong>Mouche</strong> (French for <em>fly</em>) names a pinpoint training target. Foil tips compress inside tight millimeter barrel tolerances (&gt;500 g tip break force) under a &lt;500 g weapon mass limit—favoring a thin wireless module and rigid-flex carrier over fragile WLCSP earbud harvesting.</p>
           </div>
           <div class="explainer-box">
             <h2>Accelerometer + Mic Spatial &amp; Contact Log</h2>
             <p><strong>Contact:</strong> Accel magnitude, jerk, squared window energy, and refractory gating paired with MEMS microphone transients and tip-switch state classify flicks, flat hits, and beats. <strong>Spatial:</strong> Gyro/accel pose and short impact-anchored arcs log relative motion while respecting integration drift limits.</p>
           </div>
+        </div>
+
+        <div class="figure-grid">
+          <figure class="figure-card">
+            <img src="https://www.researchgate.net/publication/317260527/figure/fig4/AS:500815383232512@1496415100365/Schematic-cross-sectional-view-of-the-foil_Q320.jpg" alt="Schematic cross-sectional view of the foil tip showing millimeter dimensions" />
+            <figcaption><strong>Engineer's Drawing:</strong> Foil tip cross-section (<code>D = 4 mm</code>, corner/slot radii). Credit: ResearchGate (<code>https://www.researchgate.net/figure/Schematic-cross-sectional-view-of-the-foil_fig4_317260527</code>).</figcaption>
+          </figure>
+          <figure class="figure-card">
+            <img src="https://store-usa.arduino.cc/cdn/shop/files/c000136_a_700x525.jpg?v=1727103797" alt="6-axis accelerometer and gyroscope IMU module showing X, Y, Z axes" />
+            <figcaption><strong>6-Axis IMU Reference:</strong> Accelerometer + gyroscope board with X/Y/Z axes. Credit: Arduino Store (<code>https://store-usa.arduino.cc/products/grove-6-axis-accelerometer-gyroscope</code>).</figcaption>
+          </figure>
         </div>
 
         <div class="slider-panel">
@@ -754,10 +791,10 @@ document.addEventListener("DOMContentLoaded", initMoucheV3);
         </div>
 
         <div class="media-credits">
-          <strong>Referenced Engineering Drawings, Hardware &amp; Motion Clips:</strong>
+          <strong>Credits &amp; Motion References:</strong>
           <ul>
-            <li>Foil point cross-section drawing: South African Fencing foil tip diagram (<code>https://saf.pairsite.com/foiltip.html</code>).</li>
-            <li>6-DoF IMU X/Y/Z axis &amp; sensor reference: Adafruit 6-DoF IMU breakout module (<code>https://www.adafruit.com/product/3886</code>).</li>
+            <li>Foil tip cross-section drawing: ResearchGate schematic (<code>https://www.researchgate.net/figure/Schematic-cross-sectional-view-of-the-foil_fig4_317260527</code>).</li>
+            <li>6-axis IMU sensor board: Arduino Store Grove 6-Axis Accelerometer &amp; Gyroscope (<code>https://store-usa.arduino.cc/products/grove-6-axis-accelerometer-gyroscope</code>).</li>
             <li>Fencing foil point &amp; flick motion demos: YouTube search query <code>"fencing foil tip point flick hit action"</code>.</li>
           </ul>
         </div>
@@ -798,4 +835,4 @@ document.addEventListener("DOMContentLoaded", initMoucheV3);
 
 if __name__ == "__main__":
     summary = run_test_suite()
-    print("Built Mouche V3 unified Hero + Slider platform at", summary["built_at_utc"])
+    print("Built Mouche V4 hero + media platform at", summary["built_at_utc"])

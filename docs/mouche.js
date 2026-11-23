@@ -1,4 +1,4 @@
-// Mouche V3 unified Hero slider, waveform scrub, CSV/JSON parser & detector
+// Mouche V4 unified Hero slider, waveform scrub, CSV/JSON parser & detector
 let moucheState = {
   manifest: null,
   trace: [],
@@ -267,7 +267,7 @@ function refreshHeroPlatform() {
   renderEventsTable(events);
 }
 
-async function initMoucheV3() {
+async function initMoucheV4() {
   const manifestPre = document.getElementById("live-manifest-view");
   try {
     const resp = await fetch("build_manifest.json", { cache: "no-store" });
@@ -303,7 +303,7 @@ async function initMoucheV3() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "mouche-v3-session.json";
+    a.download = "mouche-v4-session.json";
     a.click();
     URL.revokeObjectURL(url);
   });
@@ -335,4 +335,4 @@ async function initMoucheV3() {
   refreshHeroPlatform();
 }
 
-document.addEventListener("DOMContentLoaded", initMoucheV3);
+document.addEventListener("DOMContentLoaded", initMoucheV4);
