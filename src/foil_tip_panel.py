@@ -1,4 +1,4 @@
-"""Mouche foil-tip ring buffer, causal hit detector, and Popen launcher."""
+"""Mouche foil-tip ring buffer, causal hit/flick detector, and Popen runner."""
 
 from collections import deque
 from dataclasses import dataclass
@@ -58,6 +58,6 @@ class CausalHitDetector:
         return None
 
 
-def spawn_child_popen(cmd: list[str]) -> subprocess.Popen:
-    """Launch a child process via `subprocess.Popen` (never `subprocess.run`)."""
+def spawn_with_popen(cmd: list[str]) -> subprocess.Popen:
+    """Spawn a child process via `subprocess.Popen` (never `subprocess.run`)."""
     return subprocess.Popen(cmd)

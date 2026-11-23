@@ -3,44 +3,82 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mouche — Foil Tip Bluetooth &amp; Telemetry Overview</title>
+  <title>Mouche — Foil Tip Bluetooth &amp; Test Platform</title>
   <link rel="stylesheet" href="mouche.css" />
   <script src="mouche.js" defer></script>
 </head>
 <body>
   <header>
-    <span class="badge">Mouche Foil Tip Telemetry</span>
-    <h1>Mouche — Foil Tip Bluetooth &amp; Telemetry Overview</h1>
-    <p><strong>Status:</strong> Built cleanly via <code>src/build_site.py</code> at <code>2026-11-23T15:04:20.646348+00:00</code>.</p>
+    <div>
+      <span class="pill">Mouche Test Platform</span>
+      <h1>Mouche — Foil Tip Bluetooth &amp; Telemetry Overview</h1>
+      <p>Built cleanly via <code>src/build_site.py</code> at <code>2026-11-23T15:10:37.457386+00:00</code> &bull; NumPy <code>2.3.5</code></p>
+    </div>
+    <div id="mass-budget-status" class="pill">FIE Mass OK: 486.0 g (14.0 g remaining under 500 g limit)</div>
   </header>
 
-  <section>
-    <h2>Etymology &amp; Foil Tip Context</h2>
-    <p><strong>Mouche</strong> (French for <em>fly</em>) denotes a small precision target on a training surface or plastron. Existing foil tips combine a spring-loaded plunger, barrel, and scoring circuit under strict FIE limits (&lt;500 g total foil mass, &gt;500 g tip spring break force) and tight internal tip volume.</p>
-    <p>Rather than fragile hot-air reflow harvesting of WLCSP earbud dies, Mouche favors an ultra-thin wireless module, rigid-flex carrier, strain-relieved thin pouch cell, isolated tip contact sense, and mechanical shock hardening.</p>
+  <div class="grid">
+    <div class="card">
+      <h2>Etymology &amp; Tip Design</h2>
+      <p><strong>Mouche</strong> (French for <em>fly</em>) refers to a precision target on a training surface or plastron. Existing foil tips pair a spring-loaded plunger (&gt;500 g break force) and scoring circuit inside a &lt;500 g foil.</p>
+      <p>Mouche avoids fragile hot-air reflow harvesting of WLCSP earbud dies in favor of a compact wireless module, rigid-flex carrier, strain-relieved thin pouch cell, and isolated tip sense.</p>
+    </div>
+    <div class="card">
+      <h2>Accelerometer + Microphone Logging</h2>
+      <p><strong>Contact:</strong> Accelerometer magnitude, jerk, and window energy with refractory gating plus MEMS microphone transients and tip-switch state log flicks, flat hits, and blade beats.</p>
+      <p><strong>Spatial:</strong> Gyro/accel pose and short impact-anchored arcs capture relative tip kinematics while guarding against double-integration drift.</p>
+    </div>
+  </div>
+
+  <section class="card">
+    <h2>Interactive Foil-Tip Test Platform</h2>
+    <div class="controls">
+      <label>Test Scenario
+        <select id="scenario-select">
+          <option value="flick">Flick Impulse</option>
+          <option value="flat_hit">Flat / Line Hit</option>
+          <option value="blade_beat_ringing">Blade Beat + Ringing</option>
+        </select>
+      </label>
+      <label>Jerk Threshold (g/s)
+        <input id="jerk-thr-input" type="number" step="50" value="500" />
+      </label>
+      <label>Refractory (ms)
+        <input id="refractory-ms-input" type="number" step="10" value="150" />
+      </label>
+      <label>Measured Foil Mass (g)
+        <input id="foil-mass-input" type="number" step="0.5" value="486" />
+      </label>
+      <button id="run-scenario-btn" type="button">Simulate Scenario</button>
+      <button id="export-json-btn" class="secondary" type="button">Export Session JSON</button>
+    </div>
+
+    <canvas id="telemetry-canvas" width="960" height="260"></canvas>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp (ns)</th>
+          <th>Peak Accel</th>
+          <th>Jerk</th>
+          <th>Mic Env</th>
+          <th>Classification</th>
+        </tr>
+      </thead>
+      <tbody id="events-tbody"></tbody>
+    </table>
   </section>
 
-  <section>
-    <h2>Accelerometer + Microphone: Contact &amp; Spatial Logging</h2>
-    <ul>
-      <li><strong>Contact Logging:</strong> Accelerometer magnitude, jerk, and window energy separate flicks from flat hits with refractory gating, while a MEMS microphone captures acoustic/vibration contact transients (plunger seating, blade beats, surface impacts) alongside tip switch state.</li>
-      <li><strong>Spatial Logging:</strong> Accelerometer + gyroscope orientation/pose and short-interval impact/motion-anchored arcs log relative tip kinematics, while explicitly accounting for double-integration drift when global room coordinates are not externally anchored.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Build Telemetry &amp; Manifest</h2>
-    <ul>
-      <li><strong>NumPy runtime:</strong> <code>2.3.5</code></li>
-      <li><strong>RingBuffer test count:</strong> <code>3</code> samples</li>
-      <li><strong>Detector rate:</strong> <code>200.0 Hz</code> (candidate events detected in synthetic pulse: <code>1</code>)</li>
-      <li><strong>Manifest file:</strong> <a href="build_manifest.json"><code>build_manifest.json</code></a></li>
-    </ul>
+  <section class="card">
+    <h2>Inspect Local Session Log &amp; Build Manifest</h2>
+    <input id="log-file-input" type="file" accept=".csv,.json,.txt" />
+    <pre id="custom-log-view">No local session file loaded yet.</pre>
+    <h3>Build Manifest (<code>docs/build_manifest.json</code>)</h3>
     <pre id="live-manifest-view">{
-  &quot;device&quot;: &quot;Mouche&quot;,
-  &quot;project&quot;: &quot;Mouche \u2014 Foil Tip Bluetooth &amp; Contact/Spatial Telemetry&quot;,
+  &quot;brand&quot;: &quot;Mouche&quot;,
+  &quot;title&quot;: &quot;Mouche \u2014 Foil Tip Bluetooth &amp; Test Platform&quot;,
   &quot;etymology&quot;: &quot;French &#x27;mouche&#x27; (fly / small precision target on a training surface or plastron)&quot;,
-  &quot;built_at_utc&quot;: &quot;2026-11-23T15:04:20.646348+00:00&quot;,
+  &quot;built_at_utc&quot;: &quot;2026-11-23T15:10:37.457386+00:00&quot;,
   &quot;numpy_version&quot;: &quot;2.3.5&quot;,
   &quot;constraints&quot;: {
     &quot;max_foil_mass_g&quot;: 500.0,
@@ -51,21 +89,70 @@
       &quot;isolated_tip_contact&quot;
     ]
   },
-  &quot;ring_buffer_samples&quot;: 3,
-  &quot;detector_sample_rate_hz&quot;: 200.0,
+  &quot;detector_config&quot;: {
+    &quot;fs_hz&quot;: 200.0,
+    &quot;energy_window_ms&quot;: 20.0,
+    &quot;jerk_threshold&quot;: 500.0,
+    &quot;refractory_ms&quot;: 150.0
+  },
+  &quot;ring_buffer_samples&quot;: 5,
   &quot;candidate_events&quot;: [
     {
       &quot;t_ns&quot;: 1005000000,
-      &quot;peak_g&quot;: 12.041594578792296,
-      &quot;jerk_g_per_s&quot;: 2208.3189157584593,
-      &quot;envelope_energy&quot;: 42.52079728939615,
+      &quot;peak_g&quot;: 14.071247279470288,
+      &quot;jerk_g_per_s&quot;: 2614.2494558940575,
+      &quot;envelope_energy&quot;: 56.78562363973514,
       &quot;label&quot;: &quot;flick_candidate&quot;
+    }
+  ],
+  &quot;default_trace&quot;: [
+    {
+      &quot;t_ns&quot;: 1000000000,
+      &quot;ax&quot;: 0.0,
+      &quot;ay&quot;: 0.0,
+      &quot;az&quot;: 1.0,
+      &quot;mag_g&quot;: 1.0,
+      &quot;mic_env&quot;: 0.05,
+      &quot;tip_open&quot;: 0
+    },
+    {
+      &quot;t_ns&quot;: 1005000000,
+      &quot;ax&quot;: 14.0,
+      &quot;ay&quot;: 1.0,
+      &quot;az&quot;: 1.0,
+      &quot;mag_g&quot;: 14.071247279470288,
+      &quot;mic_env&quot;: 0.85,
+      &quot;tip_open&quot;: 1
+    },
+    {
+      &quot;t_ns&quot;: 1025000000,
+      &quot;ax&quot;: 7.5,
+      &quot;ay&quot;: 0.5,
+      &quot;az&quot;: 1.0,
+      &quot;mag_g&quot;: 7.582875444051551,
+      &quot;mic_env&quot;: 0.4,
+      &quot;tip_open&quot;: 1
+    },
+    {
+      &quot;t_ns&quot;: 1250000000,
+      &quot;ax&quot;: 6.2,
+      &quot;ay&quot;: 0.2,
+      &quot;az&quot;: 1.0,
+      &quot;mag_g&quot;: 6.2833112289620034,
+      &quot;mic_env&quot;: 0.65,
+      &quot;tip_open&quot;: 1
+    },
+    {
+      &quot;t_ns&quot;: 1270000000,
+      &quot;ax&quot;: 1.0,
+      &quot;ay&quot;: 0.0,
+      &quot;az&quot;: 1.0,
+      &quot;mag_g&quot;: 1.4142135623730951,
+      &quot;mic_env&quot;: 0.06,
+      &quot;tip_open&quot;: 0
     }
   ]
 }</pre>
-    <h3>Inspect Local Session Log (CSV / JSON)</h3>
-    <input id="log-file-input" type="file" accept=".csv,.json,.txt" />
-    <pre id="custom-log-view">No local session file loaded yet.</pre>
   </section>
 </body>
 </html>

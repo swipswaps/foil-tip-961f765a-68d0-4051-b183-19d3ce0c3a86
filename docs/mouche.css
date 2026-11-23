@@ -1,4 +1,4 @@
-/* Mouche Foil Tip Telemetry Stylesheet */
+/* Mouche Foil Tip Test Platform Styles */
 :root {
   --bg: #f8fafc;
   --fg: #0f172a;
@@ -6,21 +6,87 @@
   --card: #ffffff;
   --border: #cbd5e1;
   --accent: #0f766e;
+  --accent-soft: #ccfbf1;
   --code-bg: #f1f5f9;
 }
+* { box-sizing: border-box; }
 body {
   font-family: system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--fg);
-  max-width: 920px;
+  max-width: 1040px;
   margin: 2rem auto;
-  padding: 0 1rem;
-  line-height: 1.55;
+  padding: 0 1rem 3rem;
+  line-height: 1.5;
 }
-header { border-bottom: 2px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
-.badge { display: inline-block; background: #ccfbf1; color: var(--accent); font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.85rem; }
-section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem; }
-h1, h2, h3 { margin-top: 0; }
-code, pre { background: var(--code-bg); border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+.pill {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.1rem;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.9rem;
+}
+label { display: inline-flex; flex-direction: column; font-size: 0.85rem; color: var(--muted); gap: 0.2rem; }
+input, select, button {
+  font: inherit;
+  padding: 0.4rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--fg);
+}
+button {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+button.secondary { background: #fff; color: var(--fg); border-color: var(--border); }
+canvas {
+  width: 100%;
+  height: 260px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #ffffff;
+  display: block;
+}
+table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.9rem; }
+th, td { border-bottom: 1px solid var(--border); padding: 0.45rem 0.5rem; text-align: left; }
+code, pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: var(--code-bg);
+  border-radius: 4px;
+}
 code { padding: 0.15rem 0.35rem; }
-pre { padding: 1rem; overflow-x: auto; }
+pre { padding: 0.9rem; overflow-x: auto; max-height: 280px; }

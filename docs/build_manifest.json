@@ -1,8 +1,8 @@
 {
-  "device": "Mouche",
-  "project": "Mouche \u2014 Foil Tip Bluetooth & Contact/Spatial Telemetry",
+  "brand": "Mouche",
+  "title": "Mouche \u2014 Foil Tip Bluetooth & Test Platform",
   "etymology": "French 'mouche' (fly / small precision target on a training surface or plastron)",
-  "built_at_utc": "2026-11-23T15:04:20.646348+00:00",
+  "built_at_utc": "2026-11-23T15:10:37.457386+00:00",
   "numpy_version": "2.3.5",
   "constraints": {
     "max_foil_mass_g": 500.0,
@@ -13,15 +13,67 @@
       "isolated_tip_contact"
     ]
   },
-  "ring_buffer_samples": 3,
-  "detector_sample_rate_hz": 200.0,
+  "detector_config": {
+    "fs_hz": 200.0,
+    "energy_window_ms": 20.0,
+    "jerk_threshold": 500.0,
+    "refractory_ms": 150.0
+  },
+  "ring_buffer_samples": 5,
   "candidate_events": [
     {
       "t_ns": 1005000000,
-      "peak_g": 12.041594578792296,
-      "jerk_g_per_s": 2208.3189157584593,
-      "envelope_energy": 42.52079728939615,
+      "peak_g": 14.071247279470288,
+      "jerk_g_per_s": 2614.2494558940575,
+      "envelope_energy": 56.78562363973514,
       "label": "flick_candidate"
+    }
+  ],
+  "default_trace": [
+    {
+      "t_ns": 1000000000,
+      "ax": 0.0,
+      "ay": 0.0,
+      "az": 1.0,
+      "mag_g": 1.0,
+      "mic_env": 0.05,
+      "tip_open": 0
+    },
+    {
+      "t_ns": 1005000000,
+      "ax": 14.0,
+      "ay": 1.0,
+      "az": 1.0,
+      "mag_g": 14.071247279470288,
+      "mic_env": 0.85,
+      "tip_open": 1
+    },
+    {
+      "t_ns": 1025000000,
+      "ax": 7.5,
+      "ay": 0.5,
+      "az": 1.0,
+      "mag_g": 7.582875444051551,
+      "mic_env": 0.4,
+      "tip_open": 1
+    },
+    {
+      "t_ns": 1250000000,
+      "ax": 6.2,
+      "ay": 0.2,
+      "az": 1.0,
+      "mag_g": 6.2833112289620034,
+      "mic_env": 0.65,
+      "tip_open": 1
+    },
+    {
+      "t_ns": 1270000000,
+      "ax": 1.0,
+      "ay": 0.0,
+      "az": 1.0,
+      "mag_g": 1.4142135623730951,
+      "mic_env": 0.06,
+      "tip_open": 0
     }
   ]
 }
