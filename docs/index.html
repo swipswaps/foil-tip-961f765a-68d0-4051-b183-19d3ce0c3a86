@@ -2,9 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Foil Tip Telemetry Overview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Foil Tip Bluetooth &amp; Telemetry Overview</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 840px; margin: 2.5rem auto; padding: 0 1rem; line-height: 1.5; }
+    code, pre { background: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 4px; }
+    pre { padding: 1rem; overflow-x: auto; }
+  </style>
 </head>
 <body>
   <h1>Foil Tip Bluetooth &amp; Telemetry Overview</h1>
+  <p><strong>Status:</strong> Built cleanly via <code>src/build_site.py</code> at <code>2026-11-23T14:52:06.940273+00:00</code>.</p>
+  <ul>
+    <li><strong>NumPy runtime:</strong> <code>2.3.5</code></li>
+    <li><strong>RingBuffer test count:</strong> <code>3</code> samples</li>
+    <li><strong>Detector rate:</strong> <code>200.0 Hz</code> (candidate events detected in synthetic pulse: <code>1</code>)</li>
+    <li><strong>Manifest:</strong> <a href="build_manifest.json"><code>build_manifest.json</code></a></li>
+  </ul>
+  <pre>{
+  &quot;project&quot;: &quot;Foil Tip Bluetooth &amp; Telemetry Overview&quot;,
+  &quot;built_at_utc&quot;: &quot;2026-11-23T14:52:06.940273+00:00&quot;,
+  &quot;numpy_version&quot;: &quot;2.3.5&quot;,
+  &quot;ring_buffer_samples&quot;: 3,
+  &quot;detector_sample_rate_hz&quot;: 200.0,
+  &quot;candidate_events&quot;: [
+    {
+      &quot;t_ns&quot;: 1005000000,
+      &quot;peak_g&quot;: 12.041594578792296,
+      &quot;label&quot;: &quot;flick_candidate&quot;
+    }
+  ]
+}</pre>
 </body>
 </html>

@@ -1,0 +1,14 @@
+{
+  "project": "Foil Tip Bluetooth & Telemetry Overview",
+  "built_at_utc": "2026-11-23T14:52:06.940273+00:00",
+  "numpy_version": "2.3.5",
+  "ring_buffer_samples": 3,
+  "detector_sample_rate_hz": 200.0,
+  "candidate_events": [
+    {
+      "t_ns": 1005000000,
+      "peak_g": 12.041594578792296,
+      "label": "flick_candidate"
+    }
+  ]
+}
