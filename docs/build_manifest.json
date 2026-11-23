@@ -1,13 +1,26 @@
 {
-  "project": "Foil Tip Bluetooth & Telemetry Overview",
-  "built_at_utc": "2026-11-23T14:52:06.940273+00:00",
+  "device": "Mouche",
+  "project": "Mouche \u2014 Foil Tip Bluetooth & Contact/Spatial Telemetry",
+  "etymology": "French 'mouche' (fly / small precision target on a training surface or plastron)",
+  "built_at_utc": "2026-11-23T15:04:20.646348+00:00",
   "numpy_version": "2.3.5",
+  "constraints": {
+    "max_foil_mass_g": 500.0,
+    "min_tip_spring_break_force_g": 500.0,
+    "sensors": [
+      "accelerometer_imu",
+      "mems_microphone",
+      "isolated_tip_contact"
+    ]
+  },
   "ring_buffer_samples": 3,
   "detector_sample_rate_hz": 200.0,
   "candidate_events": [
     {
       "t_ns": 1005000000,
       "peak_g": 12.041594578792296,
+      "jerk_g_per_s": 2208.3189157584593,
+      "envelope_energy": 42.52079728939615,
       "label": "flick_candidate"
     }
   ]

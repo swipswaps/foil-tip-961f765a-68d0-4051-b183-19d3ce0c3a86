@@ -1,0 +1,26 @@
+/* Mouche Foil Tip Telemetry Stylesheet */
+:root {
+  --bg: #f8fafc;
+  --fg: #0f172a;
+  --muted: #475569;
+  --card: #ffffff;
+  --border: #cbd5e1;
+  --accent: #0f766e;
+  --code-bg: #f1f5f9;
+}
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  max-width: 920px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  line-height: 1.55;
+}
+header { border-bottom: 2px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+.badge { display: inline-block; background: #ccfbf1; color: var(--accent); font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.85rem; }
+section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem; }
+h1, h2, h3 { margin-top: 0; }
+code, pre { background: var(--code-bg); border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+code { padding: 0.15rem 0.35rem; }
+pre { padding: 1rem; overflow-x: auto; }

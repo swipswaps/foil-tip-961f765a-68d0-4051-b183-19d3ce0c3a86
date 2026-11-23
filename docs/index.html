@@ -3,35 +3,69 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Foil Tip Bluetooth &amp; Telemetry Overview</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 840px; margin: 2.5rem auto; padding: 0 1rem; line-height: 1.5; }
-    code, pre { background: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 4px; }
-    pre { padding: 1rem; overflow-x: auto; }
-  </style>
+  <title>Mouche — Foil Tip Bluetooth &amp; Telemetry Overview</title>
+  <link rel="stylesheet" href="mouche.css" />
+  <script src="mouche.js" defer></script>
 </head>
 <body>
-  <h1>Foil Tip Bluetooth &amp; Telemetry Overview</h1>
-  <p><strong>Status:</strong> Built cleanly via <code>src/build_site.py</code> at <code>2026-11-23T14:52:06.940273+00:00</code>.</p>
-  <ul>
-    <li><strong>NumPy runtime:</strong> <code>2.3.5</code></li>
-    <li><strong>RingBuffer test count:</strong> <code>3</code> samples</li>
-    <li><strong>Detector rate:</strong> <code>200.0 Hz</code> (candidate events detected in synthetic pulse: <code>1</code>)</li>
-    <li><strong>Manifest:</strong> <a href="build_manifest.json"><code>build_manifest.json</code></a></li>
-  </ul>
-  <pre>{
-  &quot;project&quot;: &quot;Foil Tip Bluetooth &amp; Telemetry Overview&quot;,
-  &quot;built_at_utc&quot;: &quot;2026-11-23T14:52:06.940273+00:00&quot;,
+  <header>
+    <span class="badge">Mouche Foil Tip Telemetry</span>
+    <h1>Mouche — Foil Tip Bluetooth &amp; Telemetry Overview</h1>
+    <p><strong>Status:</strong> Built cleanly via <code>src/build_site.py</code> at <code>2026-11-23T15:04:20.646348+00:00</code>.</p>
+  </header>
+
+  <section>
+    <h2>Etymology &amp; Foil Tip Context</h2>
+    <p><strong>Mouche</strong> (French for <em>fly</em>) denotes a small precision target on a training surface or plastron. Existing foil tips combine a spring-loaded plunger, barrel, and scoring circuit under strict FIE limits (&lt;500 g total foil mass, &gt;500 g tip spring break force) and tight internal tip volume.</p>
+    <p>Rather than fragile hot-air reflow harvesting of WLCSP earbud dies, Mouche favors an ultra-thin wireless module, rigid-flex carrier, strain-relieved thin pouch cell, isolated tip contact sense, and mechanical shock hardening.</p>
+  </section>
+
+  <section>
+    <h2>Accelerometer + Microphone: Contact &amp; Spatial Logging</h2>
+    <ul>
+      <li><strong>Contact Logging:</strong> Accelerometer magnitude, jerk, and window energy separate flicks from flat hits with refractory gating, while a MEMS microphone captures acoustic/vibration contact transients (plunger seating, blade beats, surface impacts) alongside tip switch state.</li>
+      <li><strong>Spatial Logging:</strong> Accelerometer + gyroscope orientation/pose and short-interval impact/motion-anchored arcs log relative tip kinematics, while explicitly accounting for double-integration drift when global room coordinates are not externally anchored.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Build Telemetry &amp; Manifest</h2>
+    <ul>
+      <li><strong>NumPy runtime:</strong> <code>2.3.5</code></li>
+      <li><strong>RingBuffer test count:</strong> <code>3</code> samples</li>
+      <li><strong>Detector rate:</strong> <code>200.0 Hz</code> (candidate events detected in synthetic pulse: <code>1</code>)</li>
+      <li><strong>Manifest file:</strong> <a href="build_manifest.json"><code>build_manifest.json</code></a></li>
+    </ul>
+    <pre id="live-manifest-view">{
+  &quot;device&quot;: &quot;Mouche&quot;,
+  &quot;project&quot;: &quot;Mouche \u2014 Foil Tip Bluetooth &amp; Contact/Spatial Telemetry&quot;,
+  &quot;etymology&quot;: &quot;French &#x27;mouche&#x27; (fly / small precision target on a training surface or plastron)&quot;,
+  &quot;built_at_utc&quot;: &quot;2026-11-23T15:04:20.646348+00:00&quot;,
   &quot;numpy_version&quot;: &quot;2.3.5&quot;,
+  &quot;constraints&quot;: {
+    &quot;max_foil_mass_g&quot;: 500.0,
+    &quot;min_tip_spring_break_force_g&quot;: 500.0,
+    &quot;sensors&quot;: [
+      &quot;accelerometer_imu&quot;,
+      &quot;mems_microphone&quot;,
+      &quot;isolated_tip_contact&quot;
+    ]
+  },
   &quot;ring_buffer_samples&quot;: 3,
   &quot;detector_sample_rate_hz&quot;: 200.0,
   &quot;candidate_events&quot;: [
     {
       &quot;t_ns&quot;: 1005000000,
       &quot;peak_g&quot;: 12.041594578792296,
+      &quot;jerk_g_per_s&quot;: 2208.3189157584593,
+      &quot;envelope_energy&quot;: 42.52079728939615,
       &quot;label&quot;: &quot;flick_candidate&quot;
     }
   ]
 }</pre>
+    <h3>Inspect Local Session Log (CSV / JSON)</h3>
+    <input id="log-file-input" type="file" accept=".csv,.json,.txt" />
+    <pre id="custom-log-view">No local session file loaded yet.</pre>
+  </section>
 </body>
 </html>
