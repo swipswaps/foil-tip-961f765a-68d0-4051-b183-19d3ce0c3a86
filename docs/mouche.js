@@ -1,4 +1,4 @@
-// Mouche interactive test platform: waveform generator, causal detector & log viewer
+// Mouche Material-UI test platform logic with automatic CSV & JSON trace parsing
 let moucheState = {
   manifest: null,
   trace: [],
@@ -7,6 +7,35 @@ let moucheState = {
 
 function computeMag(ax, ay, az) {
   return Math.sqrt(ax * ax + ay * ay + az * az);
+}
+
+function parseCsvTrace(csvText) {
+  const lines = csvText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+  const idxT = headers.indexOf("t_ns");
+  const idxAx = headers.indexOf("ax");
+  const idxAy = headers.indexOf("ay");
+  const idxAz = headers.indexOf("az");
+  const idxMag = headers.indexOf("mag_g");
+  const idxMic = headers.indexOf("mic_env");
+  const idxTip = headers.indexOf("tip_open");
+
+  const parsed = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(",").map((c) => c.trim());
+    const ax = idxAx >= 0 ? Number(cols[idxAx] || 0) : 0;
+    const ay = idxAy >= 0 ? Number(cols[idxAy] || 0) : 0;
+    const az = idxAz >= 0 ? Number(cols[idxAz] || 1) : 1;
+    const tNs = idxT >= 0 && cols[idxT] ? Number(cols[idxT]) : (1_000_000_000 + (i - 1) * 5_000_000);
+    const mag = idxMag >= 0 && cols[idxMag] !== "" ? Number(cols[idxMag]) : computeMag(ax, ay, az);
+    const micEnv = idxMic >= 0 && cols[idxMic] !== "" ? Number(cols[idxMic]) : 0;
+    const tipOpen = idxTip >= 0 && cols[idxTip] !== "" ? Number(cols[idxTip]) : 0;
+    if (!Number.isNaN(tNs) && !Number.isNaN(mag)) {
+      parsed.push({ t_ns: tNs, ax, ay, az, mag_g: mag, mic_env: micEnv, tip_open: tipOpen });
+    }
+  }
+  return parsed;
 }
 
 function generateScenario(scenario, fsHz = 200) {
@@ -18,8 +47,8 @@ function generateScenario(scenario, fsHz = 200) {
   for (let i = 0; i < totalSamples; i++) {
     const tSec = i * dt;
     const tNs = Math.round(t0 + tSec * 1e9);
-    let ax = 0.05 * Math.sin(2 * Math.PI * 3 * tSec);
-    let ay = 0.03 * Math.cos(2 * Math.PI * 2 * tSec);
+    let ax = 0.04 * Math.sin(2 * Math.PI * 3 * tSec);
+    let ay = 0.02 * Math.cos(2 * Math.PI * 2 * tSec);
     let az = 1.0;
     let micEnv = 0.05;
     let tipOpen = 0;
@@ -28,11 +57,11 @@ function generateScenario(scenario, fsHz = 200) {
       const p = (tSec - 0.35) / 0.07;
       ax = 16.0 * Math.sin(Math.PI * p);
       micEnv = 0.92 * Math.sin(Math.PI * p);
-      tipOpen = p > 0.4 ? 1 : 0;
+      tipOpen = p > 0.35 ? 1 : 0;
     } else if (scenario === "flat_hit" && tSec >= 0.60 && tSec <= 0.72) {
       const p = (tSec - 0.60) / 0.12;
       ax = 7.5 * Math.sin(Math.PI * p);
-      micEnv = 0.65 * Math.sin(Math.PI * p);
+      micEnv = 0.66 * Math.sin(Math.PI * p);
       tipOpen = p > 0.25 ? 1 : 0;
     } else if (scenario === "blade_beat_ringing") {
       if (tSec >= 0.30 && tSec <= 0.34) {
@@ -42,6 +71,16 @@ function generateScenario(scenario, fsHz = 200) {
         const decay = Math.exp(-(tSec - 0.34) * 28);
         ax = 6.5 * decay * Math.sin(2 * Math.PI * 55 * (tSec - 0.34));
         micEnv = 0.45 * decay;
+      }
+    } else if (scenario === "tip_contact_beat") {
+      if (tSec >= 0.25 && tSec <= 0.30) {
+        ax = 5.5 * Math.sin(Math.PI * ((tSec - 0.25) / 0.05));
+        micEnv = 0.78;
+      } else if (tSec >= 0.75 && tSec <= 0.82) {
+        const p = (tSec - 0.75) / 0.07;
+        ax = 13.5 * Math.sin(Math.PI * p);
+        micEnv = 0.94;
+        tipOpen = 1;
       }
     }
 
@@ -71,13 +110,15 @@ function runCausalDetection(trace, jerkThr, refractoryMs) {
       const jerk = Math.abs(mag - prev.mag) / dtS;
       if (pt.t_ns - lastEventNs >= refractoryNs && jerk > jerkThr) {
         lastEventNs = pt.t_ns;
+        const base = jerk > 2 * jerkThr ? "flick_candidate" : "flat_hit_candidate";
+        const label = pt.tip_open ? `${base}_tip_contact` : ((pt.mic_env || 0) >= 0.5 ? `${base}_acoustic` : base);
         detected.push({
           t_ns: pt.t_ns,
           peak_g: mag,
           jerk_g_per_s: jerk,
           mic_env: pt.mic_env || 0,
           tip_open: pt.tip_open || 0,
-          label: jerk > 2 * jerkThr ? "flick_candidate" : "flat_hit_candidate",
+          label,
         });
       }
     }
@@ -94,12 +135,12 @@ function drawTraceCanvas(trace, events) {
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  ctx.strokeStyle = "#e2e8f0";
+  ctx.strokeStyle = "#e5e7eb";
   ctx.lineWidth = 1;
-  for (let y = 20; y < h; y += 45) {
+  for (let y = 24; y < h - 10; y += 46) {
     ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(w, y);
+    ctx.moveTo(42, y);
+    ctx.lineTo(w - 16, y);
     ctx.stroke();
   }
 
@@ -108,11 +149,11 @@ function drawTraceCanvas(trace, events) {
   const tEnd = Math.max(tStart + 1, trace[trace.length - 1].t_ns);
   const maxMag = Math.max(2.0, ...trace.map((p) => p.mag_g || 1.0));
 
-  ctx.strokeStyle = "#0f766e";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#006a6a";
+  ctx.lineWidth = 2.2;
   ctx.beginPath();
   trace.forEach((pt, idx) => {
-    const x = 40 + ((pt.t_ns - tStart) / (tEnd - tStart)) * (w - 60);
+    const x = 44 + ((pt.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
     const y = h - 24 - (((pt.mag_g || 1.0) / maxMag) * (h - 48));
     if (idx === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
@@ -120,28 +161,30 @@ function drawTraceCanvas(trace, events) {
   ctx.stroke();
 
   ctx.strokeStyle = "#d97706";
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 1.6;
   ctx.beginPath();
   trace.forEach((pt, idx) => {
-    const x = 40 + ((pt.t_ns - tStart) / (tEnd - tStart)) * (w - 60);
+    const x = 44 + ((pt.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
     const y = h - 24 - (Math.min(1, pt.mic_env || 0) * (h - 48));
     if (idx === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
   ctx.stroke();
 
-  ctx.fillStyle = "#dc2626";
+  ctx.fillStyle = "#ba1a1a";
   for (const ev of events) {
-    const x = 40 + ((ev.t_ns - tStart) / (tEnd - tStart)) * (w - 60);
+    const x = 44 + ((ev.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
     const y = h - 24 - (Math.min(1, (ev.peak_g || 1.0) / maxMag) * (h - 48));
     ctx.beginPath();
-    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.arc(x, y, 5.5, 0, Math.PI * 2);
     ctx.fill();
   }
 }
 
 function renderEventsTable(events) {
   const tbody = document.getElementById("events-tbody");
+  const countEl = document.getElementById("kpi-events");
+  if (countEl) countEl.textContent = String(events.length);
   if (!tbody) return;
   if (!events.length) {
     tbody.innerHTML = "<tr><td colspan='5'>No candidate events above threshold.</td></tr>";
@@ -153,7 +196,7 @@ function renderEventsTable(events) {
       <td>${Number(ev.peak_g).toFixed(2)} g</td>
       <td>${Number(ev.jerk_g_per_s).toFixed(1)} g/s</td>
       <td>${Number(ev.mic_env || 0).toFixed(2)}</td>
-      <td><strong>${ev.label}</strong></td>
+      <td><span class="chip">${ev.label}</span></td>
     </tr>
   `).join("");
 }
@@ -165,9 +208,13 @@ function refreshTestPlatform() {
   const budgetEl = document.getElementById("mass-budget-status");
   if (budgetEl) {
     const rem = (500 - massG).toFixed(1);
-    budgetEl.textContent = massG <= 500
-      ? `FIE Mass OK: ${massG.toFixed(1)} g (${rem} g remaining under 500 g limit)`
-      : `FIE Mass OVER LIMIT: ${massG.toFixed(1)} g (+${(-rem).toFixed(1)} g over 500 g)`;
+    if (massG <= 500) {
+      budgetEl.className = "chip";
+      budgetEl.textContent = `FIE Mass OK: ${massG.toFixed(1)} g (${rem} g margin)`;
+    } else {
+      budgetEl.className = "chip err";
+      budgetEl.textContent = `FIE Over Limit: ${massG.toFixed(1)} g (+${(-rem).toFixed(1)} g)`;
+    }
   }
 
   const events = runCausalDetection(moucheState.trace, jerkThr, refrMs);
@@ -227,9 +274,15 @@ async function initMouchePlatform() {
       if (Array.isArray(parsed.trace)) {
         moucheState.trace = parsed.trace;
         refreshTestPlatform();
+        return;
       }
-    } catch (_ignored) {
-      // Non-JSON or CSV preview remains visible in custom-log-view
+    } catch (_notJson) {
+      // Attempt CSV trace parsing below
+    }
+    const csvRows = parseCsvTrace(text);
+    if (csvRows.length) {
+      moucheState.trace = csvRows;
+      refreshTestPlatform();
     }
   });
 
