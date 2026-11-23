@@ -48,6 +48,28 @@ header {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.1rem;
+  margin-bottom: 1.1rem;
+}
+.dl-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.6rem;
+}
+.dl-btn {
+  display: inline-block;
+  text-decoration: none;
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.45rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+.dl-btn.alt {
+  background: #ffffff;
+  color: var(--fg);
+  border: 1px solid var(--border);
 }
 .controls {
   display: flex;

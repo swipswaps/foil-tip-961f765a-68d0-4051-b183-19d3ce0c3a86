@@ -2,7 +2,7 @@
   "brand": "Mouche",
   "title": "Mouche \u2014 Foil Tip Bluetooth & Test Platform",
   "etymology": "French 'mouche' (fly / small precision target on a training surface or plastron)",
-  "built_at_utc": "2026-11-23T15:15:00.120725+00:00",
+  "built_at_utc": "2026-11-23T15:23:24.703861+00:00",
   "numpy_version": "2.3.5",
   "constraints": {
     "max_foil_mass_g": 500.0,
@@ -19,6 +19,12 @@
     "jerk_threshold": 500.0,
     "refractory_ms": 150.0
   },
+  "downloads": [
+    "downloads/foil_tip_panel.py",
+    "downloads/mouche_ble_client.py",
+    "downloads/build_site.py",
+    "downloads/mouche-bundle.zip"
+  ],
   "ring_buffer_samples": 5,
   "candidate_events": [
     {

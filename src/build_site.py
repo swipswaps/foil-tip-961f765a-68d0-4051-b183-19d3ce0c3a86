@@ -1,4 +1,4 @@
-"""Build the interactive Mouche test platform (`docs/`) and `docs/build_manifest.json`."""
+"""Build Mouche static site, downloadable source bundles (`docs/downloads/`), and manifest."""
 
 from datetime import datetime, timezone
 import html
@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
@@ -24,6 +25,36 @@ def _popen_capture(args: list[str]) -> tuple[int, str, str]:
     return proc.returncode, out.strip(), err.strip()
 
 
+def prepare_downloads(docs_dir: Path) -> list[str]:
+    dl_dir = docs_dir / "downloads"
+    dl_dir.mkdir(parents=True, exist_ok=True)
+
+    sources = [
+        ROOT / "src" / "foil_tip_panel.py",
+        ROOT / "src" / "mouche_ble_client.py",
+        Path(__file__).resolve(),
+    ]
+    copied = []
+    for src_file in sources:
+        if src_file.exists():
+            dest = dl_dir / src_file.name
+            dest.write_text(src_file.read_text(encoding="utf-8"), encoding="utf-8")
+            copied.append(f"downloads/{dest.name}")
+
+    zip_path = dl_dir / "mouche-bundle.zip"
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for rel in copied:
+            f = docs_dir / rel
+            zf.write(f, arcname=f"mouche/{Path(rel).name}")
+        for asset_name in ("index.html", "mouche.css", "mouche.js", "build_manifest.json"):
+            asset = docs_dir / asset_name
+            if asset.exists():
+                zf.write(asset, arcname=f"mouche/docs/{asset_name}")
+
+    copied.append("downloads/mouche-bundle.zip")
+    return copied
+
+
 def run_test_suite() -> dict:
     rc, out, err = _popen_capture([sys.executable, "-c", "import numpy as np; print(np.__version__)"])
     np_version = out if rc == 0 else f"err({rc}):{err}"
@@ -31,8 +62,6 @@ def run_test_suite() -> dict:
     rb = RingBuffer(maxlen=4096)
     det = CausalHitDetector(fs_hz=200.0, energy_window_ms=20.0, jerk_threshold=500.0, refractory_ms=150.0)
 
-    # Synthetic sequence covering: baseline, sharp flick, 20ms later ringing
-    # (suppressed by 150ms refractory window), and a later flat hit.
     samples = [
         (1_000_000_000, 0.0, 0.0, 1.0, 0.05, 0),
         (1_005_000_000, 14.0, 1.0, 1.0, 0.85, 1),
@@ -65,6 +94,10 @@ def run_test_suite() -> dict:
                 "label": ev.label,
             })
 
+    docs_dir = ROOT / "docs"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    downloads = prepare_downloads(docs_dir)
+
     built_at = datetime.now(timezone.utc).isoformat()
     manifest = {
         "brand": "Mouche",
@@ -83,13 +116,12 @@ def run_test_suite() -> dict:
             "jerk_threshold": det.jerk_thr,
             "refractory_ms": 150.0,
         },
+        "downloads": downloads,
         "ring_buffer_samples": len(rb.snapshot()),
         "candidate_events": events,
         "default_trace": trace,
     }
 
-    docs_dir = ROOT / "docs"
-    docs_dir.mkdir(parents=True, exist_ok=True)
     (docs_dir / "build_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
     css_content = """/* Mouche Foil Tip Test Platform Styles */
@@ -142,6 +174,28 @@ header {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.1rem;
+  margin-bottom: 1.1rem;
+}
+.dl-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.6rem;
+}
+.dl-btn {
+  display: inline-block;
+  text-decoration: none;
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.45rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+.dl-btn.alt {
+  background: #ffffff;
+  color: var(--fg);
+  border: 1px solid var(--border);
 }
 .controls {
   display: flex;
@@ -452,6 +506,17 @@ document.addEventListener("DOMContentLoaded", initMouchePlatform);
     <div id="mass-budget-status" class="pill">FIE Mass OK: 486.0 g (14.0 g remaining under 500 g limit)</div>
   </header>
 
+  <section class="card">
+    <h2>Downloadable Code &amp; Bundle (<code>docs/downloads/</code>)</h2>
+    <p>Run <code>python3 mouche_ble_client.py --simulate --out /tmp/session.json</code> after downloading, then load the output JSON below.</p>
+    <div class="dl-links">
+      <a class="dl-btn" href="downloads/mouche-bundle.zip" download>Download mouche-bundle.zip</a>
+      <a class="dl-btn alt" href="downloads/mouche_ble_client.py" download>Download mouche_ble_client.py</a>
+      <a class="dl-btn alt" href="downloads/foil_tip_panel.py" download>Download foil_tip_panel.py</a>
+      <a class="dl-btn alt" href="downloads/build_site.py" download>Download build_site.py</a>
+    </div>
+  </section>
+
   <div class="grid">
     <div class="card">
       <h2>Etymology &amp; Tip Design</h2>
@@ -520,4 +585,4 @@ document.addEventListener("DOMContentLoaded", initMouchePlatform);
 
 if __name__ == "__main__":
     summary = run_test_suite()
-    print("Built Mouche test platform at", summary["built_at_utc"])
+    print("Built Mouche downloads & test platform at", summary["built_at_utc"])
