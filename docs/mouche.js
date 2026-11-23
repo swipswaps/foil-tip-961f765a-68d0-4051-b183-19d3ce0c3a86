@@ -1,4 +1,4 @@
-// Mouche Material-UI test platform logic with automatic CSV & JSON trace parsing
+// Mouche V3 unified Hero slider, waveform scrub, CSV/JSON parser & detector
 let moucheState = {
   manifest: null,
   trace: [],
@@ -127,7 +127,22 @@ function runCausalDetection(trace, jerkThr, refractoryMs) {
   return detected;
 }
 
-function drawTraceCanvas(trace, events) {
+function updateScrubReadout(trace, scrubIdx) {
+  const el = document.getElementById("scrub-readout");
+  if (!el || !trace.length) return;
+  const clamped = Math.max(0, Math.min(trace.length - 1, scrubIdx));
+  const pt = trace[clamped];
+  const mag = typeof pt.mag_g === "number" ? pt.mag_g : computeMag(pt.ax, pt.ay, pt.az);
+  el.innerHTML = `
+    <span><strong>Sample:</strong> ${clamped + 1}/${trace.length}</span>
+    <span><strong>t_ns:</strong> <code>${pt.t_ns}</code></span>
+    <span><strong>Accel:</strong> ${mag.toFixed(2)} g</span>
+    <span><strong>Mic Env:</strong> ${Number(pt.mic_env || 0).toFixed(2)}</span>
+    <span><strong>Tip Open:</strong> ${pt.tip_open ? "YES (1)" : "NO (0)"}</span>
+  `;
+}
+
+function drawTraceCanvas(trace, events, scrubIdx) {
   const canvas = document.getElementById("telemetry-canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -137,7 +152,7 @@ function drawTraceCanvas(trace, events) {
 
   ctx.strokeStyle = "#e5e7eb";
   ctx.lineWidth = 1;
-  for (let y = 24; y < h - 10; y += 46) {
+  for (let y = 22; y < h - 10; y += 44) {
     ctx.beginPath();
     ctx.moveTo(42, y);
     ctx.lineTo(w - 16, y);
@@ -154,7 +169,7 @@ function drawTraceCanvas(trace, events) {
   ctx.beginPath();
   trace.forEach((pt, idx) => {
     const x = 44 + ((pt.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
-    const y = h - 24 - (((pt.mag_g || 1.0) / maxMag) * (h - 48));
+    const y = h - 22 - (((pt.mag_g || 1.0) / maxMag) * (h - 44));
     if (idx === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
@@ -165,16 +180,26 @@ function drawTraceCanvas(trace, events) {
   ctx.beginPath();
   trace.forEach((pt, idx) => {
     const x = 44 + ((pt.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
-    const y = h - 24 - (Math.min(1, pt.mic_env || 0) * (h - 48));
+    const y = h - 22 - (Math.min(1, pt.mic_env || 0) * (h - 44));
     if (idx === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
   ctx.stroke();
 
+  const clamped = Math.max(0, Math.min(trace.length - 1, scrubIdx));
+  const scrubPt = trace[clamped];
+  const sx = 44 + ((scrubPt.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
+  ctx.strokeStyle = "#2563eb";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(sx, 12);
+  ctx.lineTo(sx, h - 14);
+  ctx.stroke();
+
   ctx.fillStyle = "#ba1a1a";
   for (const ev of events) {
     const x = 44 + ((ev.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
-    const y = h - 24 - (Math.min(1, (ev.peak_g || 1.0) / maxMag) * (h - 48));
+    const y = h - 22 - (Math.min(1, (ev.peak_g || 1.0) / maxMag) * (h - 44));
     ctx.beginPath();
     ctx.arc(x, y, 5.5, 0, Math.PI * 2);
     ctx.fill();
@@ -183,8 +208,6 @@ function drawTraceCanvas(trace, events) {
 
 function renderEventsTable(events) {
   const tbody = document.getElementById("events-tbody");
-  const countEl = document.getElementById("kpi-events");
-  if (countEl) countEl.textContent = String(events.length);
   if (!tbody) return;
   if (!events.length) {
     tbody.innerHTML = "<tr><td colspan='5'>No candidate events above threshold.</td></tr>";
@@ -201,10 +224,30 @@ function renderEventsTable(events) {
   `).join("");
 }
 
-function refreshTestPlatform() {
-  const jerkThr = Number(document.getElementById("jerk-thr-input")?.value || 500);
-  const refrMs = Number(document.getElementById("refractory-ms-input")?.value || 150);
-  const massG = Number(document.getElementById("foil-mass-input")?.value || 486);
+function syncSliderLabels() {
+  const jerkVal = document.getElementById("jerk-slider")?.value || "500";
+  const refrVal = document.getElementById("refractory-slider")?.value || "150";
+  const massVal = document.getElementById("mass-slider")?.value || "486";
+  const jerkLbl = document.getElementById("jerk-val");
+  const refrLbl = document.getElementById("refractory-val");
+  const massLbl = document.getElementById("mass-val");
+  if (jerkLbl) jerkLbl.textContent = `${jerkVal} g/s`;
+  if (refrLbl) refrLbl.textContent = `${refrVal} ms`;
+  if (massLbl) massLbl.textContent = `${Number(massVal).toFixed(1)} g`;
+}
+
+function refreshHeroPlatform() {
+  syncSliderLabels();
+  const jerkThr = Number(document.getElementById("jerk-slider")?.value || 500);
+  const refrMs = Number(document.getElementById("refractory-slider")?.value || 150);
+  const massG = Number(document.getElementById("mass-slider")?.value || 486);
+
+  const scrubSlider = document.getElementById("scrub-slider");
+  if (scrubSlider) {
+    scrubSlider.max = String(Math.max(0, moucheState.trace.length - 1));
+  }
+  const scrubIdx = Number(scrubSlider?.value || 0);
+
   const budgetEl = document.getElementById("mass-budget-status");
   if (budgetEl) {
     const rem = (500 - massG).toFixed(1);
@@ -219,11 +262,12 @@ function refreshTestPlatform() {
 
   const events = runCausalDetection(moucheState.trace, jerkThr, refrMs);
   moucheState.events = events;
-  drawTraceCanvas(moucheState.trace, events);
+  updateScrubReadout(moucheState.trace, scrubIdx);
+  drawTraceCanvas(moucheState.trace, events, scrubIdx);
   renderEventsTable(events);
 }
 
-async function initMouchePlatform() {
+async function initMoucheV3() {
   const manifestPre = document.getElementById("live-manifest-view");
   try {
     const resp = await fetch("build_manifest.json", { cache: "no-store" });
@@ -244,11 +288,13 @@ async function initMouchePlatform() {
   document.getElementById("run-scenario-btn")?.addEventListener("click", () => {
     const scen = document.getElementById("scenario-select")?.value || "flick";
     moucheState.trace = generateScenario(scen);
-    refreshTestPlatform();
+    const scrubSlider = document.getElementById("scrub-slider");
+    if (scrubSlider) scrubSlider.value = "0";
+    refreshHeroPlatform();
   });
 
-  for (const id of ["jerk-thr-input", "refractory-ms-input", "foil-mass-input"]) {
-    document.getElementById(id)?.addEventListener("input", refreshTestPlatform);
+  for (const id of ["jerk-slider", "refractory-slider", "mass-slider", "scrub-slider"]) {
+    document.getElementById(id)?.addEventListener("input", refreshHeroPlatform);
   }
 
   document.getElementById("export-json-btn")?.addEventListener("click", () => {
@@ -257,7 +303,7 @@ async function initMouchePlatform() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "mouche-test-session.json";
+    a.download = "mouche-v3-session.json";
     a.click();
     URL.revokeObjectURL(url);
   });
@@ -273,20 +319,20 @@ async function initMouchePlatform() {
       const parsed = JSON.parse(text);
       if (Array.isArray(parsed.trace)) {
         moucheState.trace = parsed.trace;
-        refreshTestPlatform();
+        refreshHeroPlatform();
         return;
       }
     } catch (_notJson) {
-      // Attempt CSV trace parsing below
+      // Attempt CSV parsing below
     }
     const csvRows = parseCsvTrace(text);
     if (csvRows.length) {
       moucheState.trace = csvRows;
-      refreshTestPlatform();
+      refreshHeroPlatform();
     }
   });
 
-  refreshTestPlatform();
+  refreshHeroPlatform();
 }
 
-document.addEventListener("DOMContentLoaded", initMouchePlatform);
+document.addEventListener("DOMContentLoaded", initMoucheV3);

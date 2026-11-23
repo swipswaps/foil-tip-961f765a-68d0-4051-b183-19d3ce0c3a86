@@ -1,4 +1,4 @@
-"""Build Material-UI Mouche test platform (`docs/`) and `docs/downloads/`."""
+"""Build Mouche V3 unified Hero + Slider test platform (`docs/`) and `docs/downloads/`."""
 
 from datetime import datetime, timezone
 import html
@@ -124,27 +124,27 @@ def run_test_suite() -> dict:
 
     (docs_dir / "build_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
-    css_content = """/* Mouche Material-UI-Inspired Telemetry & Test Platform Styles */
+    css_content = """/* Mouche V3 Unified Hero + Slider Telemetry Styles */
 :root {
-  --md-bg: #f4f7fb;
+  --md-bg: #f3f6fa;
   --md-surface: #ffffff;
   --md-surface-2: #eef3f9;
-  --md-ink: #111827;
-  --md-ink-muted: #4b5563;
+  --md-ink: #0f172a;
+  --md-ink-muted: #475569;
   --md-primary: #006a6a;
   --md-primary-container: #9cf1f0;
   --md-on-primary-container: #002020;
   --md-danger: #ba1a1a;
-  --md-outline: #d1d9e6;
-  --md-shadow-1: 0 1px 3px rgba(17, 24, 39, 0.08), 0 1px 2px rgba(17, 24, 39, 0.05);
-  --md-shadow-2: 0 6px 18px rgba(17, 24, 39, 0.08);
-  --md-radius: 16px;
-  --md-radius-sm: 10px;
+  --md-outline: #cbd5e1;
+  --md-shadow-1: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --md-shadow-2: 0 10px 28px rgba(15, 23, 42, 0.12);
+  --md-radius: 18px;
+  --md-radius-sm: 12px;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  background: radial-gradient(circle at top right, #e6f4f1 0%, var(--md-bg) 48%);
+  background: radial-gradient(circle at 85% 5%, #d9f2ef 0%, var(--md-bg) 52%);
   color: var(--md-ink);
   font-family: "Inter", "Roboto", system-ui, -apple-system, sans-serif;
   line-height: 1.55;
@@ -152,14 +152,14 @@ body {
 .app-bar {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
   backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid var(--md-outline);
-  padding: 0.9rem 1.25rem;
+  padding: 0.8rem 1.25rem;
 }
 .app-bar-inner {
-  max-width: 1120px;
+  max-width: 1160px;
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
@@ -175,59 +175,86 @@ body {
   background: var(--md-primary-container);
   color: var(--md-on-primary-container);
   font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.02em;
-  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+  padding: 0.28rem 0.72rem;
   border-radius: 999px;
 }
 .chip.err { background: #fee2e2; color: var(--md-danger); }
 .container {
-  max-width: 1120px;
-  margin: 1.5rem auto 3.5rem;
+  max-width: 1160px;
+  margin: 1.25rem auto 3.5rem;
   padding: 0 1.25rem;
 }
-.hero {
-  background: linear-gradient(135deg, #004f4f 0%, #006a6a 65%, #1d4ed8 140%);
-  color: #ffffff;
-  border-radius: var(--md-radius);
-  padding: 1.75rem;
-  box-shadow: var(--md-shadow-2);
-  margin-bottom: 1.25rem;
-}
-.hero h1 { margin: 0.35rem 0 0.5rem; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; }
-.hero p { margin: 0; opacity: 0.92; max-width: 72ch; }
-.kpi-strip {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 0.9rem;
-  margin-bottom: 1.25rem;
-}
-.kpi {
+.mega-hero {
   background: var(--md-surface);
+  border: 1px solid var(--md-outline);
+  border-radius: var(--md-radius);
+  box-shadow: var(--md-shadow-2);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.hero-banner {
+  background: linear-gradient(125deg, #004747 0%, #006a6a 60%, #1e40af 135%);
+  color: #ffffff;
+  padding: 1.6rem 1.75rem;
+}
+.hero-banner h1 { margin: 0.4rem 0 0.45rem; font-size: clamp(1.5rem, 3vw, 2.15rem); font-weight: 800; }
+.hero-banner p { margin: 0; opacity: 0.94; max-width: 76ch; }
+.hero-body { padding: 1.4rem 1.75rem; }
+.explainer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+.explainer-box {
+  background: var(--md-surface-2);
   border: 1px solid var(--md-outline);
   border-radius: var(--md-radius-sm);
-  padding: 0.9rem 1rem;
-  box-shadow: var(--md-shadow-1);
+  padding: 1rem 1.1rem;
 }
-.kpi-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--md-ink-muted); font-weight: 600; }
-.kpi-val { font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; color: var(--md-primary); }
-.grid-2 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.1rem;
-  margin-bottom: 1.25rem;
-}
-.surface-card {
-  background: var(--md-surface);
+.explainer-box h2 { margin: 0 0 0.4rem; font-size: 1.05rem; color: var(--md-primary); }
+.explainer-box p { margin: 0; font-size: 0.92rem; }
+.slider-panel {
+  background: #f8fafc;
   border: 1px solid var(--md-outline);
-  border-radius: var(--md-radius);
-  padding: 1.35rem;
-  box-shadow: var(--md-shadow-1);
-  margin-bottom: 1.25rem;
+  border-radius: var(--md-radius-sm);
+  padding: 1.1rem;
+  margin-bottom: 1.1rem;
 }
-.surface-card h2 { margin: 0 0 0.6rem; font-size: 1.2rem; font-weight: 700; }
-.surface-card h3 { margin: 1rem 0 0.45rem; font-size: 1rem; font-weight: 700; color: var(--md-ink-muted); }
-.dl-row { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 0.85rem; }
+.sliders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.9rem;
+}
+.slider-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--md-ink-muted);
+}
+.slider-top { display: flex; justify-content: space-between; color: var(--md-ink); }
+input[type="range"] { width: 100%; accent-color: var(--md-primary); cursor: pointer; }
+.action-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+select {
+  font: inherit;
+  font-weight: 600;
+  color: var(--md-ink);
+  background: #ffffff;
+  border: 1px solid var(--md-outline);
+  border-radius: 8px;
+  padding: 0.48rem 0.7rem;
+}
 .btn {
   display: inline-flex;
   align-items: center;
@@ -235,72 +262,66 @@ body {
   text-decoration: none;
   font: inherit;
   font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0.55rem 1rem;
+  font-size: 0.88rem;
+  padding: 0.5rem 0.95rem;
   border-radius: 999px;
   border: 1px solid var(--md-primary);
   background: var(--md-primary);
   color: #ffffff;
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-.btn:hover { transform: translateY(-1px); box-shadow: var(--md-shadow-1); }
-.btn.tonal {
+.btn.tonal { background: var(--md-surface-2); color: var(--md-ink); border-color: var(--md-outline); }
+.scrub-readout {
+  font-size: 0.85rem;
   background: var(--md-surface-2);
-  color: var(--md-ink);
-  border-color: var(--md-outline);
-}
-.controls-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.8rem;
-  align-items: end;
-  background: var(--md-surface-2);
-  padding: 0.95rem;
-  border-radius: var(--md-radius-sm);
-  margin-bottom: 1rem;
-}
-label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; font-weight: 600; color: var(--md-ink-muted); }
-input, select {
-  font: inherit;
-  font-weight: 500;
-  color: var(--md-ink);
-  background: var(--md-surface);
   border: 1px solid var(--md-outline);
   border-radius: 8px;
-  padding: 0.48rem 0.65rem;
-}
-.legend {
+  padding: 0.55rem 0.8rem;
+  margin-bottom: 0.85rem;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  font-size: 0.82rem;
-  color: var(--md-ink-muted);
-  margin-bottom: 0.55rem;
 }
+.legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: var(--md-ink-muted); margin-bottom: 0.45rem; }
 .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 0.35rem; }
 canvas {
   width: 100%;
-  height: 270px;
+  height: 250px;
   border-radius: var(--md-radius-sm);
   border: 1px solid var(--md-outline);
   background: #ffffff;
   display: block;
 }
-table { width: 100%; border-collapse: collapse; margin-top: 0.85rem; font-size: 0.88rem; }
-th, td { border-bottom: 1px solid var(--md-outline); padding: 0.55rem 0.6rem; text-align: left; }
-th { color: var(--md-ink-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.media-credits {
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--md-outline);
+  font-size: 0.86rem;
+  color: var(--md-ink-muted);
+}
+.media-credits ul { margin: 0.35rem 0 0; padding-left: 1.25rem; }
+.surface-card {
+  background: var(--md-surface);
+  border: 1px solid var(--md-outline);
+  border-radius: var(--md-radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--md-shadow-1);
+  margin-bottom: 1.25rem;
+}
+table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.88rem; }
+th, td { border-bottom: 1px solid var(--md-outline); padding: 0.5rem 0.55rem; text-align: left; }
+th { color: var(--md-ink-muted); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.03em; }
 code, pre {
   font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   background: var(--md-surface-2);
   border-radius: 8px;
 }
-code { padding: 0.15rem 0.4rem; font-size: 0.86em; }
-pre { padding: 1rem; overflow-x: auto; max-height: 280px; border: 1px solid var(--md-outline); }
+code { padding: 0.14rem 0.38rem; font-size: 0.85em; }
+pre { padding: 0.9rem; overflow-x: auto; max-height: 260px; border: 1px solid var(--md-outline); }
 """
     (docs_dir / "mouche.css").write_text(css_content, encoding="utf-8")
 
-    js_content = """// Mouche Material-UI test platform logic with automatic CSV & JSON trace parsing
+    js_content = """// Mouche V3 unified Hero slider, waveform scrub, CSV/JSON parser & detector
 let moucheState = {
   manifest: null,
   trace: [],
@@ -429,7 +450,22 @@ function runCausalDetection(trace, jerkThr, refractoryMs) {
   return detected;
 }
 
-function drawTraceCanvas(trace, events) {
+function updateScrubReadout(trace, scrubIdx) {
+  const el = document.getElementById("scrub-readout");
+  if (!el || !trace.length) return;
+  const clamped = Math.max(0, Math.min(trace.length - 1, scrubIdx));
+  const pt = trace[clamped];
+  const mag = typeof pt.mag_g === "number" ? pt.mag_g : computeMag(pt.ax, pt.ay, pt.az);
+  el.innerHTML = `
+    <span><strong>Sample:</strong> ${clamped + 1}/${trace.length}</span>
+    <span><strong>t_ns:</strong> <code>${pt.t_ns}</code></span>
+    <span><strong>Accel:</strong> ${mag.toFixed(2)} g</span>
+    <span><strong>Mic Env:</strong> ${Number(pt.mic_env || 0).toFixed(2)}</span>
+    <span><strong>Tip Open:</strong> ${pt.tip_open ? "YES (1)" : "NO (0)"}</span>
+  `;
+}
+
+function drawTraceCanvas(trace, events, scrubIdx) {
   const canvas = document.getElementById("telemetry-canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -439,7 +475,7 @@ function drawTraceCanvas(trace, events) {
 
   ctx.strokeStyle = "#e5e7eb";
   ctx.lineWidth = 1;
-  for (let y = 24; y < h - 10; y += 46) {
+  for (let y = 22; y < h - 10; y += 44) {
     ctx.beginPath();
     ctx.moveTo(42, y);
     ctx.lineTo(w - 16, y);
@@ -456,7 +492,7 @@ function drawTraceCanvas(trace, events) {
   ctx.beginPath();
   trace.forEach((pt, idx) => {
     const x = 44 + ((pt.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
-    const y = h - 24 - (((pt.mag_g || 1.0) / maxMag) * (h - 48));
+    const y = h - 22 - (((pt.mag_g || 1.0) / maxMag) * (h - 44));
     if (idx === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
@@ -467,16 +503,26 @@ function drawTraceCanvas(trace, events) {
   ctx.beginPath();
   trace.forEach((pt, idx) => {
     const x = 44 + ((pt.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
-    const y = h - 24 - (Math.min(1, pt.mic_env || 0) * (h - 48));
+    const y = h - 22 - (Math.min(1, pt.mic_env || 0) * (h - 44));
     if (idx === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
   ctx.stroke();
 
+  const clamped = Math.max(0, Math.min(trace.length - 1, scrubIdx));
+  const scrubPt = trace[clamped];
+  const sx = 44 + ((scrubPt.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
+  ctx.strokeStyle = "#2563eb";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(sx, 12);
+  ctx.lineTo(sx, h - 14);
+  ctx.stroke();
+
   ctx.fillStyle = "#ba1a1a";
   for (const ev of events) {
     const x = 44 + ((ev.t_ns - tStart) / (tEnd - tStart)) * (w - 64);
-    const y = h - 24 - (Math.min(1, (ev.peak_g || 1.0) / maxMag) * (h - 48));
+    const y = h - 22 - (Math.min(1, (ev.peak_g || 1.0) / maxMag) * (h - 44));
     ctx.beginPath();
     ctx.arc(x, y, 5.5, 0, Math.PI * 2);
     ctx.fill();
@@ -485,8 +531,6 @@ function drawTraceCanvas(trace, events) {
 
 function renderEventsTable(events) {
   const tbody = document.getElementById("events-tbody");
-  const countEl = document.getElementById("kpi-events");
-  if (countEl) countEl.textContent = String(events.length);
   if (!tbody) return;
   if (!events.length) {
     tbody.innerHTML = "<tr><td colspan='5'>No candidate events above threshold.</td></tr>";
@@ -503,10 +547,30 @@ function renderEventsTable(events) {
   `).join("");
 }
 
-function refreshTestPlatform() {
-  const jerkThr = Number(document.getElementById("jerk-thr-input")?.value || 500);
-  const refrMs = Number(document.getElementById("refractory-ms-input")?.value || 150);
-  const massG = Number(document.getElementById("foil-mass-input")?.value || 486);
+function syncSliderLabels() {
+  const jerkVal = document.getElementById("jerk-slider")?.value || "500";
+  const refrVal = document.getElementById("refractory-slider")?.value || "150";
+  const massVal = document.getElementById("mass-slider")?.value || "486";
+  const jerkLbl = document.getElementById("jerk-val");
+  const refrLbl = document.getElementById("refractory-val");
+  const massLbl = document.getElementById("mass-val");
+  if (jerkLbl) jerkLbl.textContent = `${jerkVal} g/s`;
+  if (refrLbl) refrLbl.textContent = `${refrVal} ms`;
+  if (massLbl) massLbl.textContent = `${Number(massVal).toFixed(1)} g`;
+}
+
+function refreshHeroPlatform() {
+  syncSliderLabels();
+  const jerkThr = Number(document.getElementById("jerk-slider")?.value || 500);
+  const refrMs = Number(document.getElementById("refractory-slider")?.value || 150);
+  const massG = Number(document.getElementById("mass-slider")?.value || 486);
+
+  const scrubSlider = document.getElementById("scrub-slider");
+  if (scrubSlider) {
+    scrubSlider.max = String(Math.max(0, moucheState.trace.length - 1));
+  }
+  const scrubIdx = Number(scrubSlider?.value || 0);
+
   const budgetEl = document.getElementById("mass-budget-status");
   if (budgetEl) {
     const rem = (500 - massG).toFixed(1);
@@ -521,11 +585,12 @@ function refreshTestPlatform() {
 
   const events = runCausalDetection(moucheState.trace, jerkThr, refrMs);
   moucheState.events = events;
-  drawTraceCanvas(moucheState.trace, events);
+  updateScrubReadout(moucheState.trace, scrubIdx);
+  drawTraceCanvas(moucheState.trace, events, scrubIdx);
   renderEventsTable(events);
 }
 
-async function initMouchePlatform() {
+async function initMoucheV3() {
   const manifestPre = document.getElementById("live-manifest-view");
   try {
     const resp = await fetch("build_manifest.json", { cache: "no-store" });
@@ -546,11 +611,13 @@ async function initMouchePlatform() {
   document.getElementById("run-scenario-btn")?.addEventListener("click", () => {
     const scen = document.getElementById("scenario-select")?.value || "flick";
     moucheState.trace = generateScenario(scen);
-    refreshTestPlatform();
+    const scrubSlider = document.getElementById("scrub-slider");
+    if (scrubSlider) scrubSlider.value = "0";
+    refreshHeroPlatform();
   });
 
-  for (const id of ["jerk-thr-input", "refractory-ms-input", "foil-mass-input"]) {
-    document.getElementById(id)?.addEventListener("input", refreshTestPlatform);
+  for (const id of ["jerk-slider", "refractory-slider", "mass-slider", "scrub-slider"]) {
+    document.getElementById(id)?.addEventListener("input", refreshHeroPlatform);
   }
 
   document.getElementById("export-json-btn")?.addEventListener("click", () => {
@@ -559,7 +626,7 @@ async function initMouchePlatform() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "mouche-test-session.json";
+    a.download = "mouche-v3-session.json";
     a.click();
     URL.revokeObjectURL(url);
   });
@@ -575,23 +642,23 @@ async function initMouchePlatform() {
       const parsed = JSON.parse(text);
       if (Array.isArray(parsed.trace)) {
         moucheState.trace = parsed.trace;
-        refreshTestPlatform();
+        refreshHeroPlatform();
         return;
       }
     } catch (_notJson) {
-      // Attempt CSV trace parsing below
+      // Attempt CSV parsing below
     }
     const csvRows = parseCsvTrace(text);
     if (csvRows.length) {
       moucheState.trace = csvRows;
-      refreshTestPlatform();
+      refreshHeroPlatform();
     }
   });
 
-  refreshTestPlatform();
+  refreshHeroPlatform();
 }
 
-document.addEventListener("DOMContentLoaded", initMouchePlatform);
+document.addEventListener("DOMContentLoaded", initMoucheV3);
 """
     (docs_dir / "mouche.js").write_text(js_content, encoding="utf-8")
 
@@ -612,95 +679,93 @@ document.addEventListener("DOMContentLoaded", initMouchePlatform);
   <div class="app-bar">
     <div class="app-bar-inner">
       <div class="brand-row">
-        <span class="chip">MOUCHE</span>
-        <strong>Foil Tip Telemetry &amp; Test Platform</strong>
+        <span class="chip">MOUCHE V3</span>
+        <strong>Foil Tip Bluetooth &amp; Contact Telemetry</strong>
       </div>
       <div id="mass-budget-status" class="chip">FIE Mass OK: 486.0 g (14.0 g margin)</div>
     </div>
   </div>
 
   <main class="container">
-    <section class="hero">
-      <span class="chip">Material Surface &bull; 200 Hz Causal DSP</span>
-      <h1>Mouche — Foil Tip Bluetooth &amp; Contact Telemetry</h1>
-      <p>Named for the French <em>mouche</em> (precision target mark). Built via <code>src/build_site.py</code> at <code>{safe_built}</code> with NumPy <code>{safe_np}</code>.</p>
+    <section class="mega-hero">
+      <div class="hero-banner">
+        <span class="chip">Unified Hero Lab &bull; Sliders + Explainer + Downloads</span>
+        <h1>Mouche — Foil Tip Bluetooth &amp; Test Platform</h1>
+        <p>Built via <code>src/build_site.py</code> at <code>{safe_built}</code> &bull; NumPy <code>{safe_np}</code> &bull; Ceiling &lt;500 g foil mass &amp; &gt;500 g tip spring break force.</p>
+      </div>
+
+      <div class="hero-body">
+        <div class="explainer-grid">
+          <div class="explainer-box">
+            <h2>Etymology &amp; Tip Mechanics</h2>
+            <p><strong>Mouche</strong> (French for <em>fly</em>) names a pinpoint training mark. Foil tips pair a plunger, insulator, barrel, screw, sleeve, pressure spring (&gt;500 g break force), and wire inside a &lt;500 g foil—favoring a thin wireless module and rigid-flex carrier over fragile WLCSP earbud harvesting.</p>
+          </div>
+          <div class="explainer-box">
+            <h2>Accelerometer + Mic Spatial &amp; Contact Log</h2>
+            <p><strong>Contact:</strong> Accel magnitude, jerk, squared window energy, and refractory gating paired with MEMS microphone transients and tip-switch state classify flicks, flat hits, and beats. <strong>Spatial:</strong> Gyro/accel pose and short impact-anchored arcs log relative motion while respecting integration drift limits.</p>
+          </div>
+        </div>
+
+        <div class="slider-panel">
+          <div class="sliders-grid">
+            <label class="slider-item">
+              <span class="slider-top"><span>Jerk Threshold</span><strong id="jerk-val">500 g/s</strong></span>
+              <input id="jerk-slider" type="range" min="100" max="3000" step="50" value="500" />
+            </label>
+            <label class="slider-item">
+              <span class="slider-top"><span>Refractory Window</span><strong id="refractory-val">150 ms</strong></span>
+              <input id="refractory-slider" type="range" min="20" max="400" step="10" value="150" />
+            </label>
+            <label class="slider-item">
+              <span class="slider-top"><span>Measured Foil Mass</span><strong id="mass-val">486.0 g</strong></span>
+              <input id="mass-slider" type="range" min="420" max="530" step="0.5" value="486" />
+            </label>
+            <label class="slider-item">
+              <span class="slider-top"><span>Trace Scrub Slider</span><strong>Sample Cursor</strong></span>
+              <input id="scrub-slider" type="range" min="0" max="4" step="1" value="0" />
+            </label>
+          </div>
+
+          <div class="action-strip">
+            <select id="scenario-select" aria-label="Test Scenario">
+              <option value="flick">Flick Impulse</option>
+              <option value="flat_hit">Flat / Line Hit</option>
+              <option value="blade_beat_ringing">Blade Beat + Ringing</option>
+              <option value="tip_contact_beat">Beat + Tip Contact</option>
+            </select>
+            <button id="run-scenario-btn" class="btn" type="button">Simulate Scenario</button>
+            <button id="export-json-btn" class="btn tonal" type="button">Export Session JSON</button>
+            <a class="btn" href="downloads/mouche-bundle.zip" download>mouche-bundle.zip</a>
+            <a class="btn tonal" href="downloads/mouche_ble_client.py" download>mouche_ble_client.py</a>
+            <a class="btn tonal" href="downloads/foil_tip_panel.py" download>foil_tip_panel.py</a>
+            <a class="btn tonal" href="downloads/build_site.py" download>build_site.py</a>
+          </div>
+
+          <div id="scrub-readout" class="scrub-readout"></div>
+
+          <div class="legend">
+            <span><i class="dot" style="background:#006a6a"></i>Accel Magnitude (g)</span>
+            <span><i class="dot" style="background:#d97706"></i>MEMS Mic Envelope</span>
+            <span><i class="dot" style="background:#2563eb"></i>Scrub Cursor</span>
+            <span><i class="dot" style="background:#ba1a1a"></i>Detected Event</span>
+          </div>
+
+          <canvas id="telemetry-canvas" width="980" height="250"></canvas>
+        </div>
+
+        <div class="media-credits">
+          <strong>Referenced Engineering Drawings, Hardware &amp; Motion Clips:</strong>
+          <ul>
+            <li>Foil point cross-section drawing: South African Fencing foil tip diagram (<code>https://saf.pairsite.com/foiltip.html</code>).</li>
+            <li>6-DoF IMU X/Y/Z axis &amp; sensor reference: Adafruit 6-DoF IMU breakout module (<code>https://www.adafruit.com/product/3886</code>).</li>
+            <li>Fencing foil point &amp; flick motion demos: YouTube search query <code>"fencing foil tip point flick hit action"</code>.</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
-    <div class="kpi-strip">
-      <div class="kpi">
-        <div class="kpi-label">Mass Ceiling</div>
-        <div class="kpi-val">&lt; 500 g</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Tip Break Force</div>
-        <div class="kpi-val">&gt; 500 g</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Sample Rate</div>
-        <div class="kpi-val">{det.fs:.0f} Hz</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Detected Events</div>
-        <div id="kpi-events" class="kpi-val">{len(events)}</div>
-      </div>
-    </div>
-
     <section class="surface-card">
-      <h2>Downloadable Code &amp; Bundle (<code>docs/downloads/</code>)</h2>
-      <p>Download the bundle or modules, run <code>python3 -B mouche_ble_client.py --simulate --format csv --out /tmp/mouche_sim.csv</code> (or <code>--connect &lt;ADDR&gt;</code> with <code>bleak</code>), and load the CSV or JSON log below.</p>
-      <div class="dl-row">
-        <a class="btn" href="downloads/mouche-bundle.zip" download>Download mouche-bundle.zip</a>
-        <a class="btn tonal" href="downloads/mouche_ble_client.py" download>mouche_ble_client.py</a>
-        <a class="btn tonal" href="downloads/foil_tip_panel.py" download>foil_tip_panel.py</a>
-        <a class="btn tonal" href="downloads/build_site.py" download>build_site.py</a>
-      </div>
-    </section>
-
-    <div class="grid-2">
-      <section class="surface-card">
-        <h2>Etymology &amp; Foil Tip Design</h2>
-        <p><strong>Mouche</strong> (French for <em>fly</em>) denotes a pinpoint training mark. Conventional foil points pair a spring-loaded plunger (&gt;500 g break force) and scoring circuit inside a &lt;500 g foil.</p>
-        <p>Mouche avoids fragile hot-air reflow harvesting of WLCSP earbud dies in favor of a thin wireless module, rigid-flex carrier, strain-relieved thin pouch cell, and isolated tip sense.</p>
-      </section>
-      <section class="surface-card">
-        <h2>Accelerometer + Microphone Logging</h2>
-        <p><strong>Contact:</strong> Magnitude, jerk, squared window energy, and refractory gating paired with MEMS microphone transients and tip-switch state classify flicks, flat hits, and blade beats.</p>
-        <p><strong>Spatial:</strong> Gyro/accel pose and short impact-anchored arcs log relative tip kinematics while guarding against double-integration drift.</p>
-      </section>
-    </div>
-
-    <section class="surface-card">
-      <h2>Interactive Foil-Tip Test Platform</h2>
-      <div class="controls-bar">
-        <label>Test Scenario
-          <select id="scenario-select">
-            <option value="flick">Flick Impulse</option>
-            <option value="flat_hit">Flat / Line Hit</option>
-            <option value="blade_beat_ringing">Blade Beat + Ringing</option>
-            <option value="tip_contact_beat">Beat + Tip Contact</option>
-          </select>
-        </label>
-        <label>Jerk Threshold (g/s)
-          <input id="jerk-thr-input" type="number" step="50" value="500" />
-        </label>
-        <label>Refractory (ms)
-          <input id="refractory-ms-input" type="number" step="10" value="150" />
-        </label>
-        <label>Measured Foil Mass (g)
-          <input id="foil-mass-input" type="number" step="0.5" value="486" />
-        </label>
-        <button id="run-scenario-btn" class="btn" type="button">Simulate Scenario</button>
-        <button id="export-json-btn" class="btn tonal" type="button">Export Session JSON</button>
-      </div>
-
-      <div class="legend">
-        <span><i class="dot" style="background:#006a6a"></i>Accel Magnitude (g)</span>
-        <span><i class="dot" style="background:#d97706"></i>MEMS Mic Envelope</span>
-        <span><i class="dot" style="background:#ba1a1a"></i>Detected Event</span>
-      </div>
-
-      <canvas id="telemetry-canvas" width="980" height="270"></canvas>
-
+      <h2>Detected Contact &amp; Flick Events</h2>
       <table>
         <thead>
           <tr>
@@ -717,6 +782,7 @@ document.addEventListener("DOMContentLoaded", initMouchePlatform);
 
     <section class="surface-card">
       <h2>Inspect Local Session Log (CSV / JSON) &amp; Build Manifest</h2>
+      <p>Run <code>python3 -B mouche_ble_client.py --simulate --format csv --out /tmp/mouche_sim.csv</code> (or <code>--connect &lt;ADDR&gt;</code> with <code>bleak</code>) and load the file below.</p>
       <input id="log-file-input" type="file" accept=".csv,.json,.txt" />
       <pre id="custom-log-view">No local session file loaded yet.</pre>
       <h3>Build Manifest (<code>docs/build_manifest.json</code>)</h3>
@@ -732,4 +798,4 @@ document.addEventListener("DOMContentLoaded", initMouchePlatform);
 
 if __name__ == "__main__":
     summary = run_test_suite()
-    print("Built Mouche V2 test platform at", summary["built_at_utc"])
+    print("Built Mouche V3 unified Hero + Slider platform at", summary["built_at_utc"])
